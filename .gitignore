@@ -1,0 +1,6 @@
+*.gif
+*.mp4
+ipynb*
+*.ipynb
+*.npy
+*temp
