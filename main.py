@@ -28,8 +28,8 @@ class ForestFire:
         self.grid = np.random.choice([EMPTY, TREE], size = (self.gridsize, self.gridsize), p = [1-self.initial_trees, self.initial_trees])
         self.no_fires = []
         self.no_trees = []
-        self.fire_wait_times = np.zeros(shape = (10,))
-        self.fire_wait_points = np.random.randint(1, int(self.gridsize/10), size = (10, ))
+        self.fire_wait_times = np.zeros(shape = (20,))
+        self.fire_wait_points = np.random.randint(1, int(self.gridsize/10), size = (20, ))
         self.fire_wait_distributions = np.array([])
 
     def step(self):
@@ -39,27 +39,21 @@ class ForestFire:
         self.no_trees.append(self.measure_trees())
 
         grids = [self.grid.copy() for _ in range(4)]
-        # print(self.grid)
-
-        #Rule to randomly burn
+        
+        #Rule to spontaneously burn
         grid_lightning = self.random_fire(grids[0])
-        # print("\n random burn: \n", grid_lightning)
         
         #Rule to regrow
         grid_regrow = self.regrow(grids[1])
-        # print("\n regrow: \n", grid_regrow)
 
         #Rule to spread
         grid_spread = self.spread_fire(grids[2])
-        # print("\n spread: \n", grid_spread)
 
-        #Combine burning rules
+        #Combine burning rules, where now it is a 1 if it is burning. 
         burn_grid = np.array((grids[3]+1 == grid_spread)|(grids[3]+1 == grid_lightning), dtype = int)
-        # print("\n Combined burn: \n", burn_grid)
 
-        #Combine rules
+        #Combine burning + regrow rules
         self.grid = burn_grid + grid_regrow
-        # print("\n New grid: \n", self.grid)
 
         self.measure_wait()
 
@@ -114,7 +108,7 @@ class ForestFire:
 
     def measure_wait(self):
 
-        for i in range(10):
+        for i in range(20):
             if self.grid[self.fire_wait_points[i], self.fire_wait_points[i]] != FIRE:
                 self.fire_wait_times[i] += 1
             else:
@@ -199,14 +193,10 @@ def main():
                                                                 float(args.prob_burn), 
                                                                 float(args.prob_regrow), 
                                                                 args.no_steps)
-
     anim.save(f)
-
-    # print("\n waits: \n", a.fire_wait_distributions)
-    # print("\n no trees: \n", a.no_trees)
-    # print("\n no_fires: \n", a.no_fires)
     
     end = time.time()
+
     print("Time taken: {}".format(np.round(end-start)))
 
 main()
