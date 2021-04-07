@@ -24,10 +24,8 @@ class ForestFire:
         self.grid = np.random.choice([EMPTY, TREE], size = (self.gridsize, self.gridsize), p = [1-self.initial_trees, self.initial_trees])
         self.no_fires = []
         self.no_trees = []
-        self.fire_wait_times = np.zeros(shape = (20,))
-        self.fire_wait_points = np.random.randint(1, int(self.gridsize/10), size = (20, ))
+        self.fire_wait_times = np.zeros(shape = (50,))
         self.fire_wait_distributions = np.array([])
-        self.grid_copy = copy.deepcopy(self.grid)
 
 
     def step(self):
@@ -106,9 +104,9 @@ class ForestFire:
 
     def measure_wait(self):
         #Updates waiting times data
-        for i in range(20):
-            if self.grid[self.fire_wait_points[i], self.fire_wait_points[i]] != FIRE:
+        for i in range(50):
+            if self.grid[2*i, 2*i] != FIRE:
                 self.fire_wait_times[i] += 1
-            else:
+            elif self.grid[2*i, 2*i] == FIRE:
                 self.fire_wait_distributions = np.append(self.fire_wait_distributions, self.fire_wait_times[i])
                 self.fire_wait_times[i] = 0
