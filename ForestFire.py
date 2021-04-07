@@ -1,9 +1,5 @@
 import numpy as np
-import matplotlib.pyplot as plt 
-import time
-import argparse
-import matplotlib.animation as animation
-from matplotlib import colors
+import copy 
 
 class ForestFire:
     global EMPTY
@@ -31,6 +27,8 @@ class ForestFire:
         self.fire_wait_times = np.zeros(shape = (20,))
         self.fire_wait_points = np.random.randint(1, int(self.gridsize/10), size = (20, ))
         self.fire_wait_distributions = np.array([])
+        self.grid_copy = copy.deepcopy(self.grid)
+
 
     def step(self):
         """Method to spread existing FIRE, extinguish, and regrow, and randomly burn, and keep track of those numbers
@@ -54,8 +52,6 @@ class ForestFire:
 
         #Combine burning + regrow rules
         self.grid = burn_grid + grid_regrow
-
-        self.measure_wait()
 
         del(grids, grid_lightning, grid_regrow, grid_spread, burn_grid)
     
@@ -114,99 +110,3 @@ class ForestFire:
             else:
                 self.fire_wait_distributions = np.append(self.fire_wait_distributions, self.fire_wait_times[i])
                 self.fire_wait_times[i] = 0
-
-
-def main():
-
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--grid_size", "-g", help="Set the square gridsize. Recommended: 50-1000")
-    parser.add_argument("--no_trees", "-n_t", help="Set initial fraction of trees")
-    parser.add_argument("--prob_burn", "-f", help="Set probability of spontaneous burning of a tree")
-    parser.add_argument("--prob_regrow", "-p", help="Set probability of an empty site regrowing a tree")
-    parser.add_argument("--no_steps", "-s", help="Set probability of maximum number of steps")
-
-    args = parser.parse_args()
-    a = ForestFire( square_gridsize = int(args.grid_size), 
-                initial_trees = float(args.no_trees),
-                prob_burn = float(args.prob_burn),
-                prob_regrow = float(args.prob_regrow)
-                )
-
-    start = time.time()
-
-    colors_list = [(0.2,0,0), (0,0.5,0), (1,0,0), 'red']
-    cmap = colors.ListedColormap(colors_list)
-    bounds = [0,1,2,3]
-    norm = colors.BoundaryNorm(bounds, cmap.N)
-    fig, ax = plt.subplots(figsize = (50,50))
-
-    plt.text(0, 0, 
-    "no_trees={}, p={:.4f}, f={:.4f}, steps={}".format(float(args.no_trees), 
-                                                        float(args.prob_burn), 
-                                                        float(args.prob_regrow), 
-                                                        args.no_steps), 
-    size=10,
-    ha="left", va="bottom",
-    bbox=dict(boxstyle="square",
-                ec=(1., 0.5, 0.5),
-                fc=(1., 0.8, 0.8),
-                )
-    )
-    
-    im = ax.imshow( np.zeros(shape = (int(args.grid_size), int(args.grid_size))),
-                    cmap=cmap,
-                    norm=norm,
-                    aspect = 'equal',
-                    interpolation = 'none',
-                    animated=True)
-
-    def init():
-        print("\nInitialising...\n")
-        im.set_data(np.zeros(shape = (int(args.grid_size), int(args.grid_size))))
-        
-    max_time_step = int(args.no_steps)
-    def update(time_step):
-        if time_step != max_time_step:
-            print("Step No: ", time_step)
-            a.step()
-            im.set_data(a.grid)
-            return im
-        else:
-            s_t = 3
-            for s in range(s_t):
-                print("Figure closing in {} seconds...".format(int(s_t-s)))
-                time.sleep(1)
-            plt.close()
-    
-    
-    anim = animation.FuncAnimation(fig, 
-                                update,
-                                init_func=init, 
-                                frames=max_time_step+1, 
-                                interval=1, 
-                                # save_count = max_time_step+1, 
-                                repeat = False
-                                )
-    plt.show()
-
-    f = r"animation_no_trees={}_p={:.4f}_f={:.4f}_steps={}.gif".format(float(args.no_trees), 
-                                                                float(args.prob_burn), 
-                                                                float(args.prob_regrow), 
-                                                                args.no_steps)
-    anim.save(f)
-    
-    end = time.time()
-
-    print("Time taken: {}".format(np.round(end-start)))
-
-main()
-
-
-
-
-
-
-
-
-
-
