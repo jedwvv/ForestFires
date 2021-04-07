@@ -89,6 +89,7 @@ class ForestFire:
         return grid
 
     def fire_size(self):
+        #Returns number of FIRE cells
         on_fire = self.grid.copy()
         on_fire[on_fire != FIRE] = 0
         fire_size = np.sum(on_fire)/2
@@ -96,6 +97,7 @@ class ForestFire:
         return int(fire_size)
     
     def measure_trees(self):
+        #Returns number of TREE cells
         trees = self.grid.copy()
         trees[trees != TREE] = 0
         no_trees = np.sum(trees)
@@ -103,7 +105,7 @@ class ForestFire:
         return int(no_trees)
 
     def measure_wait(self):
-
+        #Updates waiting times data
         for i in range(20):
             if self.grid[self.fire_wait_points[i], self.fire_wait_points[i]] != FIRE:
                 self.fire_wait_times[i] += 1
