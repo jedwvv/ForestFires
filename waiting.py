@@ -29,6 +29,7 @@ def main():
     end = time.time()
     print("Time taken: {}".format(np.round(end-start)))
     plt.hist(a.fire_wait_distributions, bins = 50)
+    plt.gca().set(title='f={}, p={}, steps={}, sample_size=50cells'.format(args.prob_burn, args.prob_regrow, args.no_steps), ylabel= 'No of times sampled', xlabel='Waiting time between fires'.format(args.no_steps))
     plt.show()
 
 

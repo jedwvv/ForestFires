@@ -31,7 +31,7 @@ def main():
 
     print("Time taken: {}".format(np.round(end-start)))
 
-    plt.hist(fires, bins = 50)
+    plt.hist(fires, bins = 25)
     plt.gca().set(title='f={}, p={}, steps={}'.format(args.prob_burn, args.prob_regrow, args.no_steps), ylabel= 'No of samples', xlabel='No of red cells after {} steps'.format(args.no_steps))
     plt.show()
     
