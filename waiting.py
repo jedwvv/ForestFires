@@ -28,8 +28,17 @@ def main():
 
     end = time.time()
     print("Time taken: {}".format(np.round(end-start)))
-    plt.hist(a.fire_wait_distributions, bins = 50)
-    plt.gca().set(title='f={}, p={}, steps={}, sample_size=50cells'.format(args.prob_burn, args.prob_regrow, args.no_steps), ylabel= 'No of times sampled', xlabel='Waiting time between fires'.format(args.no_steps))
+    weights = np.ones_like(a.fire_wait_distributions)/len(a.fire_wait_distributions)
+    plt.hist(a.fire_wait_distributions, bins = 50, weights = weights)
+    plt.legend(
+        labels = ["f={}, p={}, steps={}, samples=50 cells".format(args.prob_burn, args.prob_regrow, args.no_steps)] ,
+        fontsize= 'medium',
+        loc = "upper right"
+        )
+    ax = plt.gca()
+    ax.set_title(label='Fraction of samples vs waiting times'.format(len(a.fire_wait_distributions)), fontsize = 'x-large')
+    ax.set_ylabel(ylabel = 'Fraction of samples', fontsize = 'large')
+    ax.set_xlabel(xlabel='Waiting times between fires', fontsize = 'large' )
     plt.show()
 
 

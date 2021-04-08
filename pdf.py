@@ -30,9 +30,20 @@ def main():
     end = time.time()
 
     print("Time taken: {}".format(np.round(end-start)))
-
-    plt.hist(fires, bins = 25)
-    plt.gca().set(title='f={}, p={}, steps={}'.format(args.prob_burn, args.prob_regrow, args.no_steps), ylabel= 'No of samples', xlabel='No of red cells after {} steps'.format(args.no_steps))
+    
+    #Normalise
+    weights = np.ones_like(fires)/no_restarts
+    
+    plt.hist(fires, bins = 25, weights = weights, label = "Distribution")
+    plt.legend(
+            labels = ["f={}, p={}, steps={}".format(args.prob_burn, args.prob_regrow, args.no_steps)] ,
+            fontsize= 'medium',
+            loc = "upper right"
+            )
+    ax = plt.gca()
+    ax.set_title(label='Fraction of {} samples vs number of red cells'.format(args.no_restarts, args.no_steps), fontsize = 'x-large')
+    ax.set_ylabel(ylabel = 'Fraction of samples', fontsize = 'large')
+    ax.set_xlabel(xlabel='Number of red cells after {} steps'.format(args.no_steps), fontsize = "large" )
     plt.show()
     
     
