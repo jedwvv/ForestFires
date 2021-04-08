@@ -83,7 +83,7 @@ def main():
     plt.show()
     for i in range(max_time_step):
         update(i)
-    Save animation
+    # Save animation
     f = r"animation_size={}_no_trees={}_p={:.4f}_f={:.4f}_steps={}.gif".format( int(args.grid_size),
                                                                                 float(args.no_trees), 
                                                                                 float(args.prob_burn), 

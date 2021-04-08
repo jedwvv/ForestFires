@@ -8,7 +8,7 @@ class ForestFire:
 
     EMPTY, TREE, FIRE = 0, 1, 2
 
-    def __init__(self, square_gridsize, initial_trees = 0, prob_burn = 0, prob_regrow = 0):
+    def __init__(self, square_gridsize, initial_trees = 0,prob_burn = 0, prob_regrow = 0):
         """Make a ForestFire object that represents a grid, each cell can be empty, tree, or burning at any given timestep
 
         Args:
