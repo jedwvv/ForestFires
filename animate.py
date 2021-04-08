@@ -7,17 +7,18 @@ from ForestFire import *
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--grid_size", "-g", help="Set the square gridsize. Recommended: 50-1000")
-    parser.add_argument("--no_trees", "-n_t", help="Set initial fraction of trees")
-    parser.add_argument("--prob_burn", "-f", help="Set probability of spontaneous burning of a tree")
-    parser.add_argument("--prob_regrow", "-p", help="Set probability of an empty site regrowing a tree")
-    parser.add_argument("--no_steps", "-s", help="Set probability of maximum number of steps")
+    parser.add_argument("--grid_size", "-g", help="Set the square gridsize. Recommended: 50-1000", type = int)
+    parser.add_argument("--no_trees", "-n_t", help="Set initial fraction of trees", type = float)
+    parser.add_argument("--prob_burn", "-f", help="Set probability of spontaneous burning of a tree", type = float)
+    parser.add_argument("--prob_regrow", "-p", help="Set probability of an empty site regrowing a tree", type = float)
+    parser.add_argument("--no_steps", "-s", help="Set probability of maximum number of steps", type = int)
+    parser.add_argument("--save", help="Set to True if you want to save animation, False otherwise by default", type = bool, default=False)
 
     args = parser.parse_args()
-    a = ForestFire( square_gridsize = int(args.grid_size), 
-                initial_trees = float(args.no_trees),
-                prob_burn = float(args.prob_burn),
-                prob_regrow = float(args.prob_regrow)
+    a = ForestFire( square_gridsize = args.grid_size, 
+                initial_trees = args.no_trees,
+                prob_burn = args.prob_burn,
+                prob_regrow = args.prob_regrow
                 )
 
     start = time.time()
@@ -67,29 +68,28 @@ def main():
         else:
             s_t = 3
             for s in range(s_t):
-                print("Figure closing in {} seconds...".format(int(s_t-s)))
+                print("Figure closing/terminating in {} seconds...".format(int(s_t-s)))
                 time.sleep(1)
             plt.close()
     
     # Declare and show FuncAnimation object
     anim = animation.FuncAnimation(fig, 
                                 update,
-                                init_func=init, 
+                                init_func=init,
                                 frames=max_time_step+1, 
                                 interval=1, 
-                                # save_count = max_time_step+1, 
+                                save_count = max_time_step+1, 
                                 repeat = False
                                 )
     plt.show()
-    for i in range(max_time_step):
-        update(i)
-    # Save animation
-    f = r"animation_size={}_no_trees={}_p={:.4f}_f={:.4f}_steps={}.gif".format( int(args.grid_size),
-                                                                                float(args.no_trees), 
-                                                                                float(args.prob_burn), 
-                                                                                float(args.prob_regrow), 
-                                                                                args.no_steps)
-    anim.save(f) 
+    
+    if args.save:
+        f = r"animation_size={}_no_trees={}_p={:.4f}_f={:.4f}_steps={}.gif".format( int(args.grid_size),
+                                                                                    float(args.no_trees), 
+                                                                                    float(args.prob_burn), 
+                                                                                    float(args.prob_regrow), 
+                                                                                    args.no_steps)
+        anim.save(f) 
 
                                            
     end = time.time()
