@@ -54,7 +54,7 @@ class ForestFire:
         del(grids, grid_lightning, grid_regrow, grid_spread, burn_grid)
     
     def spread_fire(self, grid):
-        #Make a grid of where the fire is, then spread it and 
+        #Make a grid of where the fire is, then spread it UP DOWN LEFT RIGHT.
         fire_grid = grid.copy()
         fire_grid[fire_grid != 2] = 0
         fire_up = np.roll(fire_grid, 1, axis=0) #Fire moves up
@@ -70,7 +70,7 @@ class ForestFire:
         return grid
 
     def random_fire(self, grid):
-        #Adds 1 to where its 1 with probability. 1>2 (TREE>FIRE)
+        #Adds 1 to where its 1 with probability self.prob_burn. (TREE>FIRE)
         fire_grid = np.random.choice([3, 1], size = grid.shape, p = [1-self.prob_burn, self.prob_burn])
         fire_grid = np.array(fire_grid == grid, dtype=int)
         grid += fire_grid
@@ -78,7 +78,7 @@ class ForestFire:
         return grid
 
     def regrow(self, grid):
-        #Adds 1 to where its 0 with probability. 0>1 (EMPTY>TREE)
+        #Adds 1 to where its 0 with probability self.prob_regrow. 0>1 (EMPTY>TREE)
         regrow_grid = np.random.choice([3, 0], size = grid.shape, p = [1-self.prob_regrow, self.prob_regrow])
         regrow_grid = np.array(regrow_grid == grid, dtype=int)
         grid += regrow_grid
